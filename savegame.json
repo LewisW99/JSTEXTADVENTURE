@@ -1,0 +1,16 @@
+{
+  "currentLocation": "start",
+  "inventory": [],
+  "stats": {
+    "strength": 5,
+    "agility": 5,
+    "intelligence": 5
+  },
+  "quests": [],
+  "xp": 0,
+  "level": 1,
+  "health": 50,
+  "stamina": 50,
+  "objectives": [],
+  "encounterChance": 0.02
+}
