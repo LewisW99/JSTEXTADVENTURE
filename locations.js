@@ -27,9 +27,18 @@ const locations = {
         description: 'You are in a clearing. There is a strange stone here.',
         options: {
             north: 'deepforest',
+            east: 'campsite'
             
         },
         item: 'mysterious stone'
+    },
+    campsite: {
+        description: 'You are at a campsite. There are signs of a struggle.',
+        options: {
+            west: 'clearing',
+
+        },
+        item: 'sword'
     },
     cave: {
         description: 'You are at the mouth of a dark cave. It looks dangerous.',
