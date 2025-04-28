@@ -1,92 +1,74 @@
-// encounter.js
-class Encounter {
-    constructor(player, type, description, successCriteria, rl) {
+export class Encounter {
+    constructor(player, type, description, successCriteria, onComplete, print) {
         this.player = player;
-        this.type = type;  // Type of the encounter (e.g., goblins, trap, etc.)
-        this.description = description;  // Description of the encounter
-        this.successCriteria = successCriteria;  // Criteria for success (e.g., agility for sneaking)
-        this.rl = rl;  // Store the readline interface
-        this.nextLocation = nextLocation;  // <- New! Where the player goes after encounter
+        this.type = type;
+        this.description = description;
+        this.successCriteria = successCriteria;
         this.onComplete = onComplete;
+        this.print = print;
     }
 
     start() {
-        console.log(this.description);  // Describe the encounter
-
-        this.rl.question('Choose an action: "sneak", "fight", or "talk": ', (action) => {
-            if (action.toLowerCase() === 'sneak') {
-                this.sneakAttempt();
-            } else if (action.toLowerCase() === 'fight') {
-                this.fight();
-            } else if (action.toLowerCase() === 'talk') {
-                this.talk();
-            } else {
-                console.log('Invalid action. Try again.');
-                this.start();  // Loop back if invalid action
-            }
-        });
+        this.print(this.description);
+        const inputArea = document.getElementById('input-area');
+        inputArea.innerHTML = `
+            <button id="sneak-btn">Sneak</button>
+            <button id="fight-btn">Fight</button>
+            <button id="talk-btn">Talk</button>
+        `;
+        document.getElementById('sneak-btn').onclick = () => this.sneakAttempt();
+        document.getElementById('fight-btn').onclick = () => this.fight();
+        document.getElementById('talk-btn').onclick = () => this.talk();
     }
 
     sneakAttempt() {
         const sneakChance = this.player.stats.agility / this.successCriteria.sneakDivisor;
         const successThreshold = Math.random();
-
-        console.log(`Your chance of sneaking is ${Math.floor(sneakChance * 100)}%`);
+        this.print(`Your chance of sneaking is ${Math.floor(sneakChance * 100)}%`);
 
         if (successThreshold < sneakChance) {
-            console.log("You successfully sneak past the obstacle!");
-            this.handleSuccess();
+            this.print('You successfully sneak past!');
+            this.endEncounter();
         } else {
-            console.log("You fail to sneak past! You are caught.");
-            this.handleFailure();
+            this.print('You fail to sneak past! You are caught.');
+            this.endEncounter();
         }
     }
 
     fight() {
-        console.log("You decide to fight!");
-
-        // Simple combat mechanic based on player's strength and enemy's strength
+        this.print('You decide to fight!');
         const fightOutcome = Math.random() * this.player.stats.strength;
         const enemyStrength = Math.random() * 50;
 
         if (fightOutcome > enemyStrength) {
-            console.log("You defeat your opponent!");
-            this.handleSuccess();
+            this.print('You defeat your opponent!');
+            this.endEncounter();
         } else {
-            console.log("You are overpowered and defeated.");
-            this.handleFailure();
+            this.print('You are overpowered and defeated.');
+            this.endEncounter();
         }
     }
 
     talk() {
-        console.log("You attempt to talk to the enemy.");
-
-        // Example of success criteria for a 'talk' action, could be based on a stat like charisma or intelligence
+        this.print('You attempt to talk to the enemy.');
         const talkChance = this.player.stats.intelligence / this.successCriteria.talkDivisor;
         const successThreshold = Math.random();
-
-        console.log(`Your chance of successfully persuading is ${Math.floor(talkChance * 100)}%`);
+        this.print(`Your chance of success is ${Math.floor(talkChance * 100)}%`);
 
         if (successThreshold < talkChance) {
-            console.log("The enemy listens to your words and lets you pass.");
-            this.handleSuccess();
+            this.print('The enemy listens and lets you pass.');
+            this.endEncounter();
         } else {
-            console.log("Your words fall on deaf ears. The enemy becomes hostile.");
-            this.handleFailure();
+            this.print('Your words fail. The enemy becomes hostile.');
+            this.endEncounter();
         }
     }
 
-    handleSuccess() {
-        console.log("You successfully navigate the encounter.");
-        this.onComplete(this.nextLocation);
-        // Additional logic on success (e.g., gain items, advance to new area)
-    }
-
-    handleFailure() {
-        console.log("The encounter ends badly. Prepare for consequences.");
-        this.onComplete(this.nextLocation);
-        // Additional logic on failure (e.g., combat starts, health loss)
+    endEncounter() {
+        document.getElementById('input-area').innerHTML = `
+            <input type="text" id="command-input" placeholder="Enter your command...">
+            <button id="submit-button">Submit</button>
+        `;
+        this.onComplete();
     }
 }
-
-module.exports = Encounter;

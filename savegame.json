@@ -1,16 +1,68 @@
 {
-  "currentLocation": "start",
+  "currentLocation": "clearing",
   "inventory": [],
+  "playerClass": "fighter",
   "stats": {
-    "strength": 5,
+    "strength": 10,
     "agility": 5,
-    "intelligence": 5
+    "intelligence": 3
   },
-  "quests": [],
-  "xp": 0,
+  "quests": [
+    {
+      "name": "Find Help For Your Village",
+      "description": "Escaspe the Village To Go And Find Help!",
+      "objectives": [
+        {
+          "name": "Escape The Village",
+          "description": "Move North To Try And Find Safety",
+          "completed": true
+        },
+        {
+          "name": "Find Help",
+          "description": "Find help for your village.",
+          "completed": false
+        }
+      ],
+      "completed": false
+    },
+    {
+      "name": "Mysterious Stone",
+      "description": "Discover the origins of the mysterious stone you found.",
+      "objectives": [
+        {
+          "name": "Investigate the Stone",
+          "description": "Find someone who knows about the stone.",
+          "completed": false
+        }
+      ],
+      "completed": false
+    }
+  ],
+  "xp": 10,
   "level": 1,
-  "health": 50,
+  "health": 100,
   "stamina": 50,
-  "objectives": [],
+  "mana": 30,
+  "objectives": [
+    [
+      {
+        "name": "Escape The Village",
+        "description": "Move North To Try And Find Safety",
+        "completed": true
+      },
+      {
+        "name": "Find Help",
+        "description": "Find help for your village.",
+        "completed": false
+      }
+    ],
+    [
+      {
+        "name": "Investigate the Stone",
+        "description": "Find someone who knows about the stone.",
+        "completed": false
+      }
+    ]
+  ],
   "encounterChance": 0.02
 }

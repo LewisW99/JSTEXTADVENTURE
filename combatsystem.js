@@ -1,76 +1,86 @@
-// combatSystem.js
-class CombatSystem {
-    constructor(player, enemyName, enemyHealth, enemyAttackPower, rl, onComplete) {
+export class CombatSystem {
+    constructor(player, enemyName, enemyHealth, enemyAttackPower, onComplete, print) {
         this.player = player;
         this.enemyName = enemyName;
         this.enemyHealth = enemyHealth;
         this.enemyAttackPower = enemyAttackPower;
-        this.rl = rl;
         this.onComplete = onComplete;
+        this.print = print;
+        this.awaitingInput = false;
+        this.initCombatUI();
+    }
+
+    initCombatUI() {
+        const inputArea = document.getElementById('input-area');
+        inputArea.innerHTML = `
+            <button id="attack-btn">Attack</button>
+            <button id="defend-btn">Defend</button>
+            <button id="flee-btn">Flee</button>
+        `;
+        document.getElementById('attack-btn').onclick = () => this.combatTurn('attack');
+        document.getElementById('defend-btn').onclick = () => this.combatTurn('defend');
+        document.getElementById('flee-btn').onclick = () => this.combatTurn('flee');
     }
 
     start() {
-        console.log(`A wild ${this.enemyName} appears!`);
-        this.combatTurn();
+        this.print(`A wild ${this.enemyName} appears!`);
+        this.showStats();
     }
 
-    combatTurn() {
-        console.log(`\nYour Health: ${this.player.health}`);
-        console.log(`${this.enemyName} Health: ${this.enemyHealth}`);
+    showStats() {
+        this.print(`\nYour Health: ${this.player.health}`);
+        this.print(`${this.enemyName} Health: ${this.enemyHealth}`);
+    }
 
-        this.rl.question('Choose an action (attack / defend / flee): ', (action) => {
-            action = action.toLowerCase();
+    combatTurn(action) {
+        if (this.awaitingInput) return;
+        this.awaitingInput = true;
 
-            if (action === 'attack') {
-                const playerDamage = Math.floor(Math.random() * 10) + 5;
-                console.log(`You attack and deal ${playerDamage} damage!`);
-                this.enemyHealth -= playerDamage;
-            } else if (action === 'defend') {
-                console.log('You defend and reduce incoming damage.');
-            } else if (action === 'flee') {
-                console.log('You attempt to flee...');
-                if (Math.random() < 0.5) {
-                    console.log('You successfully fled!');
-                    this.onComplete();
-                    return;
-                } else {
-                    console.log('Failed to flee!');
-                }
+        if (action === 'attack') {
+            const playerDamage = Math.floor(Math.random() * 10) + 5;
+            this.print(`You attack and deal ${playerDamage} damage!`);
+            this.enemyHealth -= playerDamage;
+        } else if (action === 'defend') {
+            this.print('You defend and reduce incoming damage.');
+        } else if (action === 'flee') {
+            this.print('You attempt to flee...');
+            if (Math.random() < 0.5) {
+                this.print('You successfully fled!');
+                this.endCombat();
+                return;
             } else {
-                console.log('Invalid action.');
+                this.print('Failed to flee!');
             }
+        }
 
-            // Check if enemy defeated
-            if (this.enemyHealth <= 0) {
-                console.log(`You defeated the ${this.enemyName}!`);
-                const xpReward = 20;  // Example XP reward
-                this.player.gainXP(xpReward); // Give XP
-                this.onComplete();
-                
-                return;
-            }
+        if (this.enemyHealth <= 0) {
+            this.print(`You defeated the ${this.enemyName}!`);
+            this.player.gainXP(20, this.print);
+            this.endCombat();
+            return;
+        }
 
-            // Enemy attacks
-            let enemyDamage = Math.floor(Math.random() * this.enemyAttackPower) + 1;
-            if (action === 'defend') {
-                enemyDamage = Math.floor(enemyDamage / 2);
-            }
+        // Enemy attacks
+        let enemyDamage = Math.floor(Math.random() * this.enemyAttackPower) + 1;
+        if (action === 'defend') enemyDamage = Math.floor(enemyDamage / 2);
 
-            console.log(`The ${this.enemyName} attacks and deals ${enemyDamage} damage!`);
-            this.player.health -= enemyDamage;
+        this.print(`The ${this.enemyName} attacks and deals ${enemyDamage} damage!`);
+        this.player.health -= enemyDamage;
 
-            // Check if player defeated
-            if (this.player.health <= 0) {
-                console.log('You have been defeated...');
-                this.rl.close();
-                return;
-            }
+        if (this.player.health <= 0) {
+            this.print('You have been defeated...');
+            // You can handle game over here if you want
+        } else {
+            this.showStats();
+            this.awaitingInput = false;
+        }
+    }
 
-
-            // Next turn
-            this.combatTurn();
-        });
+    endCombat() {
+        document.getElementById('input-area').innerHTML = `
+            <input type="text" id="command-input" placeholder="Enter your command...">
+            <button id="submit-button">Submit</button>
+        `;
+        this.onComplete();
     }
 }
-
-module.exports = CombatSystem;
