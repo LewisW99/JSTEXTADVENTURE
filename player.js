@@ -37,6 +37,14 @@ export class Player {
             this.xp -= xpThreshold;
             print(`You leveled up! You are now level ${this.level}.`);
             this.increaseStats(print);
+    
+            // Trigger level-up glow and pulsing effects in the UI
+            document.getElementById('game-container').classList.add('pulsing');
+            
+            setTimeout(() => {
+                // Stop pulsing after a brief duration
+                document.getElementById('game-container').classList.remove('pulsing');
+            }, 3000);  // Pulse for 3 seconds
         }
     }
 

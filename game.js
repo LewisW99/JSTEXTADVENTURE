@@ -59,6 +59,7 @@ function handleInput(input) {
         console.log('Invalid command.');
         showLocation();
     }
+    rl.write(null, { ctrl: true, name: 'u' });
 }
 
 function movePlayer(direction) {

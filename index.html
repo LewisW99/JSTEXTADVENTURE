@@ -5,14 +5,41 @@
     <title>Text Adventure Game</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body> 
     <div id="game-container">
-        <div id="output"></div>
-        <div id="input-area">
-            <input type="text" id="command-input" placeholder="Enter your command...">
-            <button id="submit-button">Submit</button>
+        <!-- Game Title -->
+        <div id="game-title">
+            <h1>Text Adventure</h1>
         </div>
+
+        <div id="output" aria-live="polite"></div>
+        
+        <form id="input-area" onsubmit="return false;">
+          <input type="text" id="command-input" placeholder="Enter your command..." autocomplete="off" />
+          <button id="submit-button">Submit</button>
+        </form>
+
+        <!-- Inventory Container -->
+        <div id="inventory-container">
+            <h3>Inventory</h3>
+            <ul id="inventory-list"></ul>
+        </div>
+
+        <!-- Health Bar Container -->
+        <div id="health-bar-container">
+            <span>Health: <span id="health-value">100</span>%</span>
+            <div id="health-bar">
+                <div id="health-fill"></div>
+            </div>
+        </div>
+
+        <div id="money-container">
+            <span id="money-amount">10</span>
+            <img id="coin-icon" src="images/gold-coin.png" alt="Gold Coin" width="20" height="20">
+          </div>
+          
     </div>
+
     <script type="module" src="main.js"></script>
 </body>
 </html>
